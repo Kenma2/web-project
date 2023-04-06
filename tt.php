@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <title>Expense Tracker</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #0069d9;
+  }
+</style>
+
   </head>
   <body>
     <h1>Expense Tracker</h1>
@@ -19,7 +37,9 @@
   <label for="description">Description:</label>
   <input type="text" name="description" required>
 
-  <button type="submit" >Submit</button>
+  <button type="submit", id="hbd" >Submit</button>
+  
+  
 </form>
 
 <?php
@@ -45,7 +65,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   
   // Close statement
   mysqli_stmt_close($stmt);
+
+  header( "Location: tt.php" );
 }
+// Retrieve data from database
+$sql = "SELECT * FROM expenses";
+$result = mysqli_query($conn, $sql);
+
+
+?>
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "project";
+
+// Create connection
+$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  if ($_POST["action"] == "clear") {
+    // Delete all records from the expenses table
+    $sql = "DELETE FROM expenses";
+    if (mysqli_query($conn, $sql)) {
+      echo "All records deleted successfully.";
+    } else {
+      echo "ERROR: Could not execute $sql. " . mysqli_error($conn);
+    }
+  }
+}
+
 // Retrieve data from database
 $sql = "SELECT * FROM expenses";
 $result = mysqli_query($conn, $sql);
@@ -63,5 +112,9 @@ if (mysqli_num_rows($result) > 0) {
   echo "0 results";
 }
 ?>
+<form method="post" action="">
+  <input type="hidden" name="action" value="clear">
+  <button type="submit" style="width: 100% ; hight:100% ">Clear</button>
+</from>
 </body>
 </html> 
