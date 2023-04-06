@@ -26,9 +26,21 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "project";
+$dbprefix = "expenses_"; // Prefix for database name
+$dbname = $dbprefix . $_SESSION['user_id']; // Append user ID to prefix for database name
 
 // Create connection
+$conn = mysqli_connect($servername, $username, $password);
+
+// Create user-specific database
+$sql = "CREATE DATABASE IF NOT EXISTS " . $dbname;
+if(mysqli_query($conn, $sql)){
+  echo "Database created successfully.";
+} else{
+  echo "ERROR: Could not execute $sql. " . mysqli_error($conn);
+}
+
+// Connect to user-specific database
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -63,5 +75,6 @@ if (mysqli_num_rows($result) > 0) {
   echo "0 results";
 }
 ?>
+
 </body>
 </html> 
